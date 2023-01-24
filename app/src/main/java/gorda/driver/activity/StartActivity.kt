@@ -16,6 +16,10 @@ import gorda.driver.databinding.ActivityStartBinding
 import gorda.driver.services.firebase.Auth
 import gorda.driver.utils.Constants
 import gorda.driver.utils.Utils
+import io.sentry.Sentry
+import io.sentry.SentryEvent
+import io.sentry.SentryLevel
+import io.sentry.protocol.Message
 
 
 class StartActivity : AppCompatActivity() {
@@ -41,8 +45,10 @@ class StartActivity : AppCompatActivity() {
 
         if (Utils.isNewerVersion()) {
             val newServiceUri: Uri =
-                Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + packageName +
-                        "/" + R.raw.assigned_service)
+                Uri.parse(
+                    ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + packageName +
+                            "/" + R.raw.assigned_service
+                )
             val notificationManager: NotificationManager =
                 getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             val locationChannel = NotificationChannel(
@@ -64,6 +70,11 @@ class StartActivity : AppCompatActivity() {
             notificationManager.createNotificationChannel(locationChannel)
             notificationManager.createNotificationChannel(servicesChannel)
         }
+        setupSentry()
+    }
+
+    private fun setupSentry() {
+        Sentry.init("<your_dsn>");
     }
 
     override fun onResume() {
@@ -96,7 +107,10 @@ class StartActivity : AppCompatActivity() {
     private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
         loginLaunched = false
         if (result.resultCode != RESULT_OK) {
-            Log.e(TAG, "error ${result.resultCode}")
+            //TODO: Example capture event
+            val msg = "error ${result.resultCode}")
+            Utils.sendEvent(msg, SentryLevel.DEBUG)
+            Log.e(TAG, msg)
             launchLogin()
         }
     }
