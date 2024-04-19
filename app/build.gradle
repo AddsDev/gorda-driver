@@ -25,6 +25,22 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    //Pone la dimension o lo que necesite
+    flavorDimensions += "version"
+
+    productFlavors {
+        create("marca") {
+            dimension = "version"
+            //applicationIdSuffix = ".demo"
+            versionNameSuffix = "-blanca"
+        }
+
+        create("gorda") {
+            dimension = "version"
+            //applicationIdSuffix = ".demo"
+            versionNameSuffix = "-drive"
+        }
+    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
